@@ -8,8 +8,9 @@
 
 using namespace std;
 
-void printMatrix(int matrix[][99]);
-void floydWarshall(int graph[][99]);
+void printMatrix(int matrix[][99]);//imprime la matriz
+void floydWarshall(int graph[][99]);//algoritmo de floyd
+void leernodo(char reng[],map <string, vector<string>> &mapa);//leer archivo de conexiones
 
 class verificar{
 
@@ -17,7 +18,8 @@ class verificar{
 
 int main(){
     ifstream archivo_nodos;
-    string reng;
+    char reng[256];
+    int ubi = 0;//ubicacion de nodo en vector
 
     map <string, vector<string>> nodos;//conexiones
     map <string, int> info;//donde tendre la ubiccaion de las conexiones en la matriz
@@ -25,13 +27,24 @@ int main(){
 
     while(archivo_nodos.good()){
         archivo_nodos.getline(reng, 256);
+        leernodo(reng, nodos);
+        ubi ++;
+        //aqui agrego el nombre del nodo(extraido del mapa nodos) con el valor de ubi
     }
+    map<string,vector<string>>::iterator
+      mit (nodos.begin()),
+      mend(nodos.end());
+        for(;mit!=mend;++mit){
+            cout << mit->first << endl;
+            for(vector<string>::iterator i= mit->second.begin(); i != mit->second.end() ;i++){
+                cout<< *i<<endl;
+            }
+        }
 
-    cout << "Hello World!" << endl;
     return 0;
 }
 
-void leernodo(string reng,map <string, vector<string>> &mapa, map <string, int> &info){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
+void leernodo(char reng[],map <string, vector<string>> &mapa){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
     int pos = 0;
     int cont = 4;
     bool aux = false;
@@ -40,33 +53,34 @@ void leernodo(string reng,map <string, vector<string>> &mapa, map <string, int> 
     vector<string> nod;//vector con nodos
 
     for(int i = 0; i < 256; i ++){
-        if(reng[i] == "*"){//nombre de nodo
+        if(reng[i] == '*'){//nombre de nodo
             for(int a = i + 1; a < 256; a ++){//nombre de nodo
-                if(reng[a] != ","){
-                    nom.append(reng[a]);//armando nombre
+                if(reng[a] != ','){
+                    nom.append(1, reng[a]);//armando nombre
                 }
                 else break;
             }
         }
-        else if(reng[i] == ","){//conexiones
-            pos = 0;
+        else if(reng[i] == ','){//conexiones
             for(int a = i + 1; a < 256; a ++){//creando conexiones
-                if(reng[a] != "," && reng[a] != "-"){//creando conexion, agrego los elementos en un string que luego agregare en el vector, el vector lo usare como matriz
-                    if(reng[a] == "/") cone.append("INF");
-                    else cone.append(reng[a]);
+                if(reng[a] != ',' && reng[a] != '-'){//creando conexion, agrego los elementos en un string que luego agregare en el vector, el vector lo usare como matriz
+                    if(reng[a] == '/') cone.append("INF");
+                    else cone.append(1, reng[a]);
                 }
-                else{
-                    cone = "";
+                else{//finalizacion de creacion de valor de conexion
                     nod.push_back(cone);
+                    cone = "";
                     break;
                 }
             }
         }
-        else if(reng[i] == "-"){
+        else if(reng[i] == '-'){
+            mapa[nom] = nod;
+            for(int i = 0; i < 4; i ++){
+            }
             break;
         }
     }
-    return true;
 }
 
 //FLOYD ALGORITMO
