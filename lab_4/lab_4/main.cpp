@@ -9,13 +9,18 @@
 using namespace std;
 
 void printMatrix(int matrix[][99]);
+void floydWarshall(int graph[][99]);
+
+class verificar{
+
+};
 
 int main(){
     ifstream archivo_nodos;
     string reng;
 
-    map <string, vector<string>> nodos;
-    map <string, int> info;
+    map <string, vector<string>> nodos;//conexiones
+    map <string, int> info;//donde tendre la ubiccaion de las conexiones en la matriz
     archivo_nodos.open("nodos.txt");
 
     while(archivo_nodos.good()){
@@ -26,12 +31,13 @@ int main(){
     return 0;
 }
 
-void leernodo(string reng,map <string, vector<vector<string>>> &mapa, map <string, int> &info){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
+void leernodo(string reng,map <string, vector<string>> &mapa, map <string, int> &info){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
     int pos = 0;
     int cont = 4;
     bool aux = false;
-    string nom = "";
-    string cone[256] ;
+    string nom = "";//string con nombre de conexion
+    string cone = "";//string temporal donde estaran
+    vector<string> nod;//vector con nodos
 
     for(int i = 0; i < 256; i ++){
         if(reng[i] == "*"){//nombre de nodo
@@ -45,43 +51,18 @@ void leernodo(string reng,map <string, vector<vector<string>>> &mapa, map <strin
         else if(reng[i] == ","){//conexiones
             pos = 0;
             for(int a = i + 1; a < 256; a ++){//creando conexiones
-                if(reng[a] != "," && reng[a] != "-"){
-                    if(reng[a] == "/") cone.append("INF")
-                    cone.append(reng[a]);
-
+                if(reng[a] != "," && reng[a] != "-"){//creando conexion, agrego los elementos en un string que luego agregare en el vector, el vector lo usare como matriz
+                    if(reng[a] == "/") cone.append("INF");
+                    else cone.append(reng[a]);
                 }
                 else{
-                    mat[1][pos] = '\0';
+                    cone = "";
+                    nod.push_back(cone);
                     break;
                 }
-
             }
         }
-        else if(reng[i] == '#'){
-            pos = 0;
-            for(int a = i + 1; a < 256; a ++){//creando numero de horas docente
-                if(reng[a] != '?'){
-                    mat[2][pos] = reng[a];
-                    //cout << a << " a" << endl;
-                    //cout << mat[2] << " numero" << endl;
-                    pos ++;//posicion en matriz
-                }
-                else break;
-            }
-        }
-        else if(reng[i] == '?'){
-            pos = 0;
-            for(int a = i + 1; a < 256; a ++){//creando creditos
-                if(reng[a] != '/'){
-                    mat[3][pos] = reng[a];
-                   // cout << a << " a" << endl;
-                    //cout << mat[3] << " numero" << endl;
-                    pos ++;//posicion en matriz
-                }
-                else break;
-            }
-        }
-        else if(reng[i] == '-'){//final de materia
+        else if(reng[i] == "-"){
             break;
         }
     }
@@ -89,11 +70,6 @@ void leernodo(string reng,map <string, vector<vector<string>>> &mapa, map <strin
 }
 
 //FLOYD ALGORITMO
-
-
-
-
-
 
 void floydWarshall(int graph[][99]) {
   int nV = 4;
