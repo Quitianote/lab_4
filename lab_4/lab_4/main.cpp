@@ -8,28 +8,70 @@
 
 using namespace std;
 
-void printMatrix(int matrix[][99]);//imprime la matriz
-void floydWarshall(int graph[][99]);//algoritmo de floyd
-void leernodo(char reng[],map <string, vector<string>> &mapa);//leer archivo de conexiones
+void printMatrix(int matrix[][99], int nV);//imprime la matriz
+void floydWarshall(int graph[][99], int nV);//algoritmo de floyd
+void leernodo(char reng[],map <string, vector<string>> &mapa,  map <string, int> &info, int ubi);//leer archivo de conexiones
 
-class verificar{
+class clase{
+    private:
+        bool aux;
+        int cant_nod;//cantidad de nodos
+
+    public:
+        clase();
+        clase(bool);//constructor booleano
+        bool verificar_numero();//metodo para verificar si el usuario coloco la opcion correcta, recibe una matriz con los numeros y un numero con el tamaño de la matriz
+        void crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
+        //puedo crear un metodo para escribir en el archivo a la hora de editar los nodos o mejor edito el mapa directamente, tiene que ser con punteros
+        //puedo crear un metodo que verifique que mi nodo no quede desconectado de los demas
 
 };
+
+clase::clase(){}//metodo sin argumentos
+
+clase::clase(bool _aux){//booleano
+    aux = _aux;
+}
+
+void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
+    int fil = 0;
+    int col = 0;
+    map<string,vector<string>>::iterator
+      mit (_nodos.begin()),
+      mend(_nodos.end());
+        for(;mit!=mend;++mit){
+            cout << mit->first << endl;
+            for(vector<string>::iterator i= mit->second.begin(); i != mit->second.end() ;i++){
+                cout<< "valor de i: " << *i<<endl;
+                if(*i == "INF") _matriz[fil][col] = INF;//si es infinito
+                else{
+                    _matriz[fil][col] = stoi(*i);//cuando no es infinito
+                }
+                col ++;
+            }
+            fil ++;
+            col = 0;
+        }
+}
 
 int main(){
     ifstream archivo_nodos;
     char reng[256];
     int ubi = 0;//ubicacion de nodo en vector
+    int cant_nod;
+    int matriz[][99] = {};//matriz para floyd
+    string nom;
+    clase graph;
+
 
     map <string, vector<string>> nodos;//conexiones
     map <string, int> info;//donde tendre la ubiccaion de las conexiones en la matriz
     archivo_nodos.open("nodos.txt");
 
-    while(archivo_nodos.good()){
+    while(archivo_nodos.good()){//leer archivo
         archivo_nodos.getline(reng, 256);
-        leernodo(reng, nodos);
+        leernodo(reng, nodos, info, ubi);
         ubi ++;
-        //aqui agrego el nombre del nodo(extraido del mapa nodos) con el valor de ubi
     }
     map<string,vector<string>>::iterator
       mit (nodos.begin()),
@@ -41,13 +83,25 @@ int main(){
             }
         }
 
+    map<string,int>::iterator
+      it (info.begin()),
+      end(info.end());
+        for(;it!=end;++it){
+            cout << it->first << endl;
+            cout << info[it->first] << endl;
+        }
+    //ahora a calcular el camino mas rapido
+    cant_nod = ubi;//la cantidad de nodos es ubim, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
+    graph.crear_matriz(matriz, cant_nod, nodos);
+    floydWarshall(matriz, cant_nod);
+    //ahora eliminar nodos o agregarlos
+
+
+
     return 0;
 }
 
-void leernodo(char reng[],map <string, vector<string>> &mapa){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
-    int pos = 0;
-    int cont = 4;
-    bool aux = false;
+void leernodo(char reng[],map <string, vector<string>> &mapa,  map <string, int> &info, int ubi){//leer renglon de nodos, es necesario el ampersan para editar directamente el mapa, eso encontre
     string nom = "";//string con nombre de conexion
     string cone = "";//string temporal donde estaran
     vector<string> nod;//vector con nodos
@@ -76,8 +130,7 @@ void leernodo(char reng[],map <string, vector<string>> &mapa){//leer renglon de 
         }
         else if(reng[i] == '-'){
             mapa[nom] = nod;
-            for(int i = 0; i < 4; i ++){
-            }
+            info[nom] = ubi;
             break;
         }
     }
@@ -85,8 +138,7 @@ void leernodo(char reng[],map <string, vector<string>> &mapa){//leer renglon de 
 
 //FLOYD ALGORITMO
 
-void floydWarshall(int graph[][99]) {
-  int nV = 4;
+void floydWarshall(int graph[][99], int nV) {
   int matrix[99][99], i, j, k;
 
   for (i = 0; i < nV; i++)
@@ -102,11 +154,17 @@ void floydWarshall(int graph[][99]) {
       }
     }
   }
-  printMatrix(matrix);
+  //pasar todos los valores de matrix a graph(matriz original)
+  for(int i = 0; i < nV; i ++){
+      for(int j = 0; j < nV; j ++){
+          graph[i][j] = matrix[i][j];
+      }
+  }
+
+  printMatrix(matrix, nV);
 }
 
-void printMatrix(int matrix[][99]) {
-  int nV = 4;
+void printMatrix(int matrix[][99], int nV) {
   for (int i = 0; i < nV; i++) {
     for (int j = 0; j < nV; j++) {
       if (matrix[i][j] == INF)
@@ -127,3 +185,8 @@ int main() {
   floydWarshall(graph);
 }
 */
+
+
+//METODOS DE LA CLASE "CLASE"
+
+
