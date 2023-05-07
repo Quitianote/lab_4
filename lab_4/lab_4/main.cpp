@@ -15,25 +15,25 @@ void leernodo(char reng[],map <string, vector<string>> &mapa,  map <string, int>
 class clase{
     private:
         bool aux;
-<<<<<<< HEAD
+
         int tam;//cantidad de nodos
-=======
+
         int cant_nod;//cantidad de nodos
->>>>>>> 7b6a42c405a0c036a20f15924510a57510611f28
+
 
     public:
         clase();
         clase(bool);//constructor booleano
         bool verificar_numero();//metodo para verificar si el usuario coloco la opcion correcta, recibe una matriz con los numeros y un numero con el tamaño de la matriz
-<<<<<<< HEAD
+
         void settam(int _tam);
         int gettam();
-        void crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
         void agregar_nodo(map <string, vector<string>> &_nodos, string nodo, int matriz[][99]);
-=======
-        void crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
->>>>>>> 7b6a42c405a0c036a20f15924510a57510611f28
-        //puedo crear un metodo para escribir en el archivo a la hora de editar los nodos o mejor edito el mapa directamente, tiene que ser con punteros
+        void eliminar_nodo(map <string, vector<string>> &_nodos, map <string, int> &info, string nodo);
+        void crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
+        bool solitario(map<string, vector<string> > &_nodos, map<string, int> &info, string nodo);
+
+
         //puedo crear un metodo que verifique que mi nodo no quede desconectado de los demas
 
 };
@@ -44,7 +44,7 @@ clase::clase(bool _aux){//booleano
     aux = _aux;
 }
 
-<<<<<<< HEAD
+
 void clase::settam(int _tam){
     tam = _tam;
 }
@@ -52,11 +52,27 @@ void clase::settam(int _tam){
 int clase::gettam(){
     return tam;
 }
+/*
+bool clase::solitario(map<string, vector<string> > &_nodos, map<string, int> &info, string nodo){
+    int pos = 0;
+    int cant = 0;
+    cout << "SOLITARIO;; " << endl;
+    for (size_t i = 0; i < _nodos[nodo].size(); i ++) {//size_t tipo de dato que almacena tamaños de arreglos y esas cosas
+        if(_nodos[nodo][i] != "0" && _nodos[nodo][i] != "INF" && _nodos[nodo][i] != "999"){//si la conexion es diferent de 0 y diferente de infinito
 
+            for (size_t j = 0; j < _nodos[].size(); j ++){
+
+            }
+        }
+        else{
+            pos ++;
+        }
+    }
+
+}
+*/
 void clase::crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
-=======
-void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
->>>>>>> 7b6a42c405a0c036a20f15924510a57510611f28
+
     int fil = 0;
     int col = 0;
     map<string,vector<string>>::iterator
@@ -65,7 +81,7 @@ void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>
         for(;mit!=mend;++mit){
             cout << mit->first << endl;
             for(vector<string>::iterator i= mit->second.begin(); i != mit->second.end() ;i++){
-                cout<< "valor de i: " << *i<<endl;
+                cout<< "valor de i: " << *i << endl;
                 if(*i == "INF") _matriz[fil][col] = INF;//si es infinito
                 else{
                     _matriz[fil][col] = stoi(*i);//cuando no es infinito
@@ -77,7 +93,7 @@ void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>
         }
 }
 
-<<<<<<< HEAD
+
 void clase::agregar_nodo(map <string, vector<string>> &_nodos, string nodo,int matriz[][99]){//pido el mapa de los nodos, el nombre y las conexiones
     vector<string> vect;
     map<string,vector<string>>::iterator
@@ -101,6 +117,40 @@ void clase::agregar_nodo(map <string, vector<string>> &_nodos, string nodo,int m
 
 }
 
+void clase::eliminar_nodo(map<string, vector<string> > &_nodos, map<string, int> &info, string nodo){
+    int pos = 0;
+    bool aux = false;
+    cout << "ANTES DE ELIMINAR: " << endl;
+    _nodos.erase(nodo);
+    map<string,vector<string>>::iterator
+      mit (_nodos.begin()),
+      mend(_nodos.end());
+        for(;mit!=mend;++mit){
+            cout << mit->first << endl;
+            for(vector<string>::iterator i= mit->second.begin(); i != mit->second.end() ;i++){
+                cout<< "valor de i: " << *i << endl;
+                if(pos == info[nodo]) _nodos[mit->first].erase(i);
+                pos ++;
+            }
+            pos = 0;
+        }
+
+    cout << "DESPUES DE ELIMINAR: " << endl;
+    pos = info[nodo];//obtengo posicion del nodo que elimine
+    info.erase(nodo);//elimino nodo de informacion
+    map<string,int>::iterator
+        it (info.begin()),
+        end (info.end());
+        for(;it != end; it ++){
+            cout << "en ELIMINAR estoy editando info: " << info[it->first] << endl;
+            if(aux || info[it->first] == ++pos){
+                info[it->first] --;
+                cout << "DESPUES DE MODIFICAR INFO: " << info[it->first] << endl;
+                aux = true;
+            }
+        }
+
+}
 
 
 
@@ -109,8 +159,6 @@ void clase::agregar_nodo(map <string, vector<string>> &_nodos, string nodo,int m
 
 
 
-=======
->>>>>>> 7b6a42c405a0c036a20f15924510a57510611f28
 int main(){
     ifstream archivo_nodos;
     char reng[256];
@@ -139,7 +187,7 @@ int main(){
                 cout<< *i<<endl;
             }
         }
-
+    cout << "info" << endl;
     map<string,int>::iterator
       it (info.begin()),
       end(info.end());
@@ -147,10 +195,10 @@ int main(){
             cout << it->first << endl;
             cout << info[it->first] << endl;
         }
-<<<<<<< HEAD
+
 
     //ahora a calcular el camino mas rapido
-    cant_nod = ubi;//la cantidad de nodos es ubim, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
+    cant_nod = ubi;//la cantidad de nodos es ubi, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
     graph.settam(cant_nod);
     graph.crear_matriz(matriz, nodos);
 
@@ -167,20 +215,36 @@ int main(){
     graph.agregar_nodo(nodos, nom, prueba);
     graph.settam(++cant_nod);
     cout << "despues de crear: " << endl;
+    cout << "UBI: " << ubi << endl;
     ubi = graph.gettam();
+    cout << "UBI despues de modificacion: " << ubi << endl;
     info[nom] = ubi;//actualizando info
     graph.crear_matriz(matriz, nodos);//creando matriz para prueba
     printMatrix(matriz, graph.gettam());//imprimiendo matriz
 
 
-=======
+
     //ahora a calcular el camino mas rapido
     cant_nod = ubi;//la cantidad de nodos es ubim, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
-    graph.crear_matriz(matriz, cant_nod, nodos);
+    graph.crear_matriz(matriz, nodos);
     floydWarshall(matriz, cant_nod);
     //ahora eliminar nodos o agregarlos
->>>>>>> 7b6a42c405a0c036a20f15924510a57510611f28
+    nom = 'A';
+    graph.eliminar_nodo(nodos, info, nom);
+    graph.settam((graph.gettam() - 1));
+    graph.crear_matriz(matriz, nodos);
+    printMatrix(matriz, graph.gettam());
 
+    //AGREGANDO OTRO NODO PARA PRUEBAS CON NODOS SOLITARIOS
+    nom = 'F';
+    int prueba2[][99] = {{5, INF, INF, INF, INF, 0}};
+    graph.agregar_nodo(nodos, nom, prueba2);
+    cout << "info 2 " << endl;
+    it = info.begin();
+    for(;it!=end;++it){
+        cout << it->first << endl;
+        cout << info[it->first] << endl;
+    }
 
 
     return 0;
