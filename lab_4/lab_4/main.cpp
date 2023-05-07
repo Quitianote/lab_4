@@ -15,13 +15,16 @@ void leernodo(char reng[],map <string, vector<string>> &mapa,  map <string, int>
 class clase{
     private:
         bool aux;
-        int cant_nod;//cantidad de nodos
+        int tam;//cantidad de nodos
 
     public:
         clase();
         clase(bool);//constructor booleano
         bool verificar_numero();//metodo para verificar si el usuario coloco la opcion correcta, recibe una matriz con los numeros y un numero con el tamaño de la matriz
-        void crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
+        void settam(int _tam);
+        int gettam();
+        void crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos);//metodo que crea matriz a partir del mapa con los nodos
+        void agregar_nodo(map <string, vector<string>> &_nodos, string nodo, int matriz[][99]);
         //puedo crear un metodo para escribir en el archivo a la hora de editar los nodos o mejor edito el mapa directamente, tiene que ser con punteros
         //puedo crear un metodo que verifique que mi nodo no quede desconectado de los demas
 
@@ -33,7 +36,15 @@ clase::clase(bool _aux){//booleano
     aux = _aux;
 }
 
-void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
+void clase::settam(int _tam){
+    tam = _tam;
+}
+
+int clase::gettam(){
+    return tam;
+}
+
+void clase::crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
     int fil = 0;
     int col = 0;
     map<string,vector<string>>::iterator
@@ -53,6 +64,37 @@ void clase::crear_matriz(int _matriz[][99], int tam, map <string, vector<string>
             col = 0;
         }
 }
+
+void clase::agregar_nodo(map <string, vector<string>> &_nodos, string nodo,int matriz[][99]){//pido el mapa de los nodos, el nombre y las conexiones
+    vector<string> vect;
+    map<string,vector<string>>::iterator
+      mit (_nodos.begin()),
+      mend(_nodos.end());
+    int i = 0;
+
+    for(;mit!=mend;++mit){//recorrer mapa
+        cout << mit->first << endl;
+        if(matriz[0][i] == INF) _nodos[mit->first].push_back("INF");//si es INF
+        else _nodos[mit->first].push_back(to_string(matriz[0][i]));//cuando es int
+
+        i ++;
+    }
+    //ahora agregar vector
+    for(i = 0; i < tam; i ++){//agrego los elementos de la matriz en un vector que luego sera agregado en el mapa
+        vect.push_back(to_string(matriz[0][i]));
+    }
+    _nodos[nodo] = vect;
+
+
+}
+
+
+
+
+
+
+
+
 
 int main(){
     ifstream archivo_nodos;
@@ -90,11 +132,31 @@ int main(){
             cout << it->first << endl;
             cout << info[it->first] << endl;
         }
+
     //ahora a calcular el camino mas rapido
     cant_nod = ubi;//la cantidad de nodos es ubim, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
-    graph.crear_matriz(matriz, cant_nod, nodos);
-    floydWarshall(matriz, cant_nod);
+    graph.settam(cant_nod);
+    graph.crear_matriz(matriz, nodos);
+
+    printMatrix(matriz, graph.gettam());
+
+    floydWarshall(matriz, graph.gettam());
+
     //ahora eliminar nodos o agregarlos
+    //agregar nodos
+    int prueba[][99] = {{INF, INF, 3, 2, 0}};
+
+    nom = 'E';
+    cout << "ANTES DE CREAR: " << endl;
+    graph.agregar_nodo(nodos, nom, prueba);
+    graph.settam(++cant_nod);
+    cout << "despues de crear: " << endl;
+    ubi = graph.gettam();
+    info[nom] = ubi;//actualizando info
+    graph.crear_matriz(matriz, nodos);//creando matriz para prueba
+    printMatrix(matriz, graph.gettam());//imprimiendo matriz
+
+
 
 
 
