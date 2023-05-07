@@ -52,17 +52,30 @@ void clase::settam(int _tam){
 int clase::gettam(){
     return tam;
 }
-/*
+
 bool clase::solitario(map<string, vector<string> > &_nodos, map<string, int> &info, string nodo){
     int pos = 0;
     int cant = 0;
     cout << "SOLITARIO;; " << endl;
+
+    map<string,int>::iterator
+        it (info.begin()),
+        end (info.end());
+
     for (size_t i = 0; i < _nodos[nodo].size(); i ++) {//size_t tipo de dato que almacena tamaños de arreglos y esas cosas
         if(_nodos[nodo][i] != "0" && _nodos[nodo][i] != "INF" && _nodos[nodo][i] != "999"){//si la conexion es diferent de 0 y diferente de infinito
 
-            for (size_t j = 0; j < _nodos[].size(); j ++){
+            for (; it < end; it ++){
+                if(info[it->first] == pos){//mirando si la posicion del nodo es la misma que la que necesito
+                    for (size_t j = 0; j < _nodos[it->first].size(); j ++){//recorro el vector para mirar si esta conectado solo a ese nodo o a mas nodos
 
+
+                    }
+
+
+                }
             }
+            j = 0;
         }
         else{
             pos ++;
@@ -70,7 +83,7 @@ bool clase::solitario(map<string, vector<string> > &_nodos, map<string, int> &in
     }
 
 }
-*/
+
 void clase::crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos){//crear matriz para lo de floyd, pide el arreglo a modificar, la matriz donde se guardara los datos y el tamaño
 
     int fil = 0;
@@ -79,9 +92,7 @@ void clase::crear_matriz(int _matriz[][99], map <string, vector<string>> &_nodos
       mit (_nodos.begin()),
       mend(_nodos.end());
         for(;mit!=mend;++mit){
-            cout << mit->first << endl;
             for(vector<string>::iterator i= mit->second.begin(); i != mit->second.end() ;i++){
-                cout<< "valor de i: " << *i << endl;
                 if(*i == "INF") _matriz[fil][col] = INF;//si es infinito
                 else{
                     _matriz[fil][col] = stoi(*i);//cuando no es infinito
@@ -213,11 +224,10 @@ int main(){
     nom = 'E';
     cout << "ANTES DE CREAR: " << endl;
     graph.agregar_nodo(nodos, nom, prueba);
-    graph.settam(++cant_nod);
+    graph.settam(++graph.gettam());
     cout << "despues de crear: " << endl;
     cout << "UBI: " << ubi << endl;
-    ubi = graph.gettam();
-    cout << "UBI despues de modificacion: " << ubi << endl;
+    ubi = (graph.gettam() - 1);
     info[nom] = ubi;//actualizando info
     graph.crear_matriz(matriz, nodos);//creando matriz para prueba
     printMatrix(matriz, graph.gettam());//imprimiendo matriz
@@ -227,12 +237,15 @@ int main(){
     //ahora a calcular el camino mas rapido
     cant_nod = ubi;//la cantidad de nodos es ubim, ya que ubi aumenta de mas y consigue el valor de cant_nod, revisa la parte donde se lee el archivo
     graph.crear_matriz(matriz, nodos);
+
     floydWarshall(matriz, cant_nod);
     //ahora eliminar nodos o agregarlos
     nom = 'A';
+
     graph.eliminar_nodo(nodos, info, nom);
     graph.settam((graph.gettam() - 1));
     graph.crear_matriz(matriz, nodos);
+
     printMatrix(matriz, graph.gettam());
 
     //AGREGANDO OTRO NODO PARA PRUEBAS CON NODOS SOLITARIOS
